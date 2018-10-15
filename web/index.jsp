@@ -13,6 +13,8 @@
     </head>
     <body>
         <h1>PreExamen Adriana Citlali Islas Estrada</h1>
-        
+        <form method="get" action="JSP/Registro.jsp">
+            <input type="submit" value="Registrarme">
+        </form>
     </body>
 </html>

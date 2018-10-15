@@ -28,7 +28,7 @@ public class Conexion {
     public void conecta(){//Metodo para conectar
         try{
         Class.forName("com.mysql.jdbc.Driver").newInstance();
-        con = DriverManager.getConnection("jdbc:mysql://localhost/preexamen","root","n0m3l0");
+        con = DriverManager.getConnection("jdbc:mysql://localhost/prueba","root","n0m3l0");
         System.out.println("Si conecta");
         
         }catch(Exception eeee){

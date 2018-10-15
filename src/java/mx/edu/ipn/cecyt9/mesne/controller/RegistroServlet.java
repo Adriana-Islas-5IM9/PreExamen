@@ -7,16 +7,22 @@ package mx.edu.ipn.cecyt9.mesne.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mx.edu.ipn.cecyt9.mesne.utils.Conexion;
 
 /**
  *
  * @author Alumno
  */
 public class RegistroServlet extends HttpServlet {
+
+    private Connection conex;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,7 +41,7 @@ public class RegistroServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RegistroServlet</title>");            
+            out.println("<title>Servlet RegistroServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet RegistroServlet at " + request.getContextPath() + "</h1>");
@@ -70,7 +76,33 @@ public class RegistroServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Conexion con = new Conexion();
+        con.conecta();
+        conex = con.getConnection();
+        String nombre;
+        String apellidos;
+
+        final String INSERT = "insert into registro(nombre,apellido) values(?, ?);";
+
+        nombre = request.getParameter("NOMBRE");
+        apellidos = request.getParameter("APELLIDO");
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conex.prepareStatement(INSERT);
+            stmt.setString(1, nombre);
+            stmt.setString(2, apellidos);
+
+            if (stmt.executeUpdate() == 0) {
+                //algo paso
+            }
+            conex.close();
+        } catch (Exception eee) {
+
+        }
+
     }
 
     /**
