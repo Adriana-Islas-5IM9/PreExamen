@@ -7,10 +7,16 @@ package mx.edu.ipn.cecyt9.mesne.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mx.edu.ipn.cecyt9.mesne.model.Registro;
+import mx.edu.ipn.cecyt9.mesne.utils.Conexion;
 
 /**
  *
@@ -18,31 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ConsultaServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ConsultaServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ConsultaServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
+   private Connection conex;
+   private ResultSet res = null;
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -56,7 +39,34 @@ public class ConsultaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        Conexion con = new Conexion();
+        con.conecta();
+        conex = con.getConnection();
+        Registro reg = null;
+        ArrayList<Registro> regs = new ArrayList();
+
+        final String INSERT = "select * from registro();";
+
+        try {
+            con.query(INSERT);
+            
+            while (res.next()) {
+                reg = new Registro();
+                reg.setNombre(res.getNString("nombre"));
+                reg.setApellido(res.getNString("apellido"));
+                reg.setIdRegistro(res.getInt("idRegistro"));
+                
+                regs.add(reg);  
+            }
+            conex.close();
+        } catch (Exception eee) {
+            System.out.println("No se encontraron los registros");
+        }
+        
+        request.getServletContext().setAttribute("Registros", reg);
+        response.sendRedirect("JSP/Consulta.jsp");
+        
     }
 
     /**
@@ -70,7 +80,7 @@ public class ConsultaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     /**
